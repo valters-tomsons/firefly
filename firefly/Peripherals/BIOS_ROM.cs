@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using firefly.Cpu;
+using firefly.Domain;
 
 namespace firefly.Peripherals
 {
@@ -7,6 +9,8 @@ namespace firefly.Peripherals
     {
         const UInt32 ExpectedSize = (512 * 1024);
         public static byte[] Data = new byte[ExpectedSize];
+
+        public readonly Range Range = new Range( (UInt32) MIPS_DEFAULT_ENUM.BIOS_KSEG1, (512 * 1024));
 
         public void CreateImage(string name)
         {
