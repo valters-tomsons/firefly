@@ -16,16 +16,16 @@ namespace firefly.Domain
             this.Length = Length;
         }
 
-        public UInt32 Contains(UInt32 Address)
+        public bool Contains(UInt32 Address, out UInt32 Offset)
         {
             if (Address >= Start && Address < Start + Length)
             {
-                return Address - Start;
+                Offset = Address - Start;
+                return true;
             }
-            else
-            {
-                return 0;
-            }
+
+            Offset = UInt32.MaxValue;
+            return false;
         }
     }
 }

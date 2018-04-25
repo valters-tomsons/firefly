@@ -2,6 +2,7 @@
 using System.IO;
 using firefly.Peripherals;
 using firefly.Domain;
+using firefly.Exceptions;
 
 namespace firefly.Cpu
 {
@@ -20,6 +21,16 @@ namespace firefly.Cpu
             BIOS_Image = new BIOS();
             BIOS_Image.CreateImage("scph5501.BIN");
             Console.WriteLine("BIOS Initialized at Interconnect");
+        }
+
+        public UInt32 Read_32(PeripheralObject Object, UInt32 Address)
+        {
+            if (Object.Range.Contains(Address, out var offset))
+            {
+                return Object.Read_32(offset);
+            }
+
+            throw new UnhandledFetch32Exception(Address, Object);
         }
     }
 }

@@ -5,12 +5,13 @@ using firefly.Domain;
 
 namespace firefly.Peripherals
 {
-    public sealed class BIOS
+    public sealed class BIOS : PeripheralObject
     {
-        const UInt32 ExpectedSize = (512 * 1024);
-        public static byte[] Data = new byte[ExpectedSize];
-
-        public readonly Range Range = new Range( (UInt32) MIPS_DEFAULT_ENUM.BIOS_KSEG1, (512 * 1024));
+        public BIOS()
+        {
+            ExpectedSize = 512 * 1024;
+            Range = new Range((UInt32) MIPS_DEFAULT_ENUM.BIOS_KSEG1, ExpectedSize);
+        }
 
         public void CreateImage(string name)
         {
@@ -27,19 +28,6 @@ namespace firefly.Peripherals
             {
                 Console.WriteLine("BIOS file doesn't exist.");
             }
-        }
-
-        //Fetch 32-bit little endian at offset
-        public UInt32 Read_32(UInt32 offset)
-        {
-            UInt32[] b = new UInt32[4];
-            for (int i = 0; i < 4; i++)
-            {
-                b[i] = Data[offset + i];
-            }
-
-            UInt32 result = b[0] | (b[1] << 8) | (b[2] << 16) | (b[3] << 24);
-            return result;
         }
     }
 }
