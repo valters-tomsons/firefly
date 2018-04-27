@@ -18,12 +18,6 @@ namespace firefly
         static void InitCPU()
         {
             CPU = new CPU();
-            LoadBIOS();
-        }
-
-        static void LoadBIOS()
-        {
-            
         }
     }
 }
