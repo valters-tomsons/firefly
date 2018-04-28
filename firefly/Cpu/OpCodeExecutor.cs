@@ -19,6 +19,22 @@ namespace firefly.Cpu
             Console.WriteLine($"{i.Func:X}");
             Console.WriteLine($"{i.Index:X}");
             Console.WriteLine($"{i.Imm:X}");
+
+            throw new Exceptions.UnhandledInstructionException(i);
+        }
+
+        //Load Upper Immediate
+        private void LUI(Instruction i)
+        {
+            //set low 16bits to 0
+            UInt32 v = i.Imm << 16;
+
+            CPU.R[i.Index] = v;
+        }
+
+        private void ORI(Instruction i)
+        {
+
         }
     }
 }

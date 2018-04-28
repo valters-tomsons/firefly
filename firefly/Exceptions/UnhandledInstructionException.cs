@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using firefly.Domain;
 
 namespace firefly.Exceptions
 {
     class UnhandledInstructionException : Exception
     {
-        public UnhandledInstructionException(UInt32 Address)
+        public UnhandledInstructionException(Instruction Address)
         {
 
         }

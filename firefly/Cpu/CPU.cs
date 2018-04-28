@@ -7,7 +7,7 @@ namespace firefly.Cpu
     sealed class CPU
     {
         //General Purpose Registers
-        private UInt32[] R = new UInt32[32];
+        public UInt32[] R = new UInt32[32];
 
         // Multiply/Divide result Registers
         private UInt32 HI;
