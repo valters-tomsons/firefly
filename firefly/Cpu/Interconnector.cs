@@ -1,7 +1,5 @@
 ﻿using System;
-using System.IO;
 using firefly.Peripherals;
-using firefly.Domain;
 using firefly.Exceptions;
 
 namespace firefly.Cpu

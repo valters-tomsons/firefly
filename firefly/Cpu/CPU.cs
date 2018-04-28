@@ -1,6 +1,5 @@
 ﻿using System;
 using firefly.Domain;
-using firefly.Exceptions;
 
 namespace firefly.Cpu
 {
