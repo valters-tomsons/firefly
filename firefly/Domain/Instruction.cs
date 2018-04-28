@@ -16,7 +16,7 @@ namespace firefly.Domain
             Func = Address >> 26;
 
             //Register index in bits 20:16
-            Index = (Address >> 16) & 0xf1;
+            Index = (Address >> 16) & 0x1F;
 
             //Immedaite value in bits 16:0
             Imm = Address & 0xffff;
