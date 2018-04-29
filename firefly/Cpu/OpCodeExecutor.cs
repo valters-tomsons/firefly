@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using firefly.Domain;
 
 namespace firefly.Cpu
@@ -8,11 +10,27 @@ namespace firefly.Cpu
     {
         private readonly CPU CPU;
         private Dictionary<UInt32, Action<Instruction>> OpCodeTable;
+        private bool isRunning = false;
+        //private Thread InterpreterThread;
 
         public OpCodeExecutor(CPU cpu)
         {
             Init_OpCodeTable();
             CPU = cpu;
+        }
+
+        public void Start()
+        {
+            isRunning = true;
+            while (isRunning)
+            {
+                EmulateCycle();
+            }
+        }
+
+        public void Pause()
+        {
+            isRunning = false;
         }
 
         private void Init_OpCodeTable()
@@ -26,13 +44,22 @@ namespace firefly.Cpu
 
         public void Execute(Instruction i)
         {
-            OpCodeTable[i.Func](i);
+            try
+            {
+                OpCodeTable[i.Func](i);
+            }
+            catch (KeyNotFoundException)
+            {
+                throw new Exceptions.UnhandledInstructionException(i);
+            }
         }
 
         public void EmulateCycle()
         {
             //Fetch & Decode
             Instruction i = CPU.Decode(CPU.Read_32(CPU.PC));
+
+            CPU.PC += 4;
 
             Execute(i);
         }
