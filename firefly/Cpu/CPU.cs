@@ -13,10 +13,10 @@ namespace firefly.Cpu
         private UInt32 LO;
 
         //Program Counter Register
-        private UInt32 PC;
+        public UInt32 PC;
 
         public Interconnector Interconnector;
-        public OpCodeExecutor Executor;
+        public OpCodeExecutor Interpreter;
 
         public CPU()
         {
@@ -29,12 +29,9 @@ namespace firefly.Cpu
 
             InitRegisters();
             Interconnector = new Interconnector();
-            Executor = new OpCodeExecutor(this);
 
-            Console.WriteLine($"0x{Read_32(PC):X}");
-
-            Instruction inst = Decode(Read_32(PC));
-            Executor.Execute(inst);
+            Interpreter = new OpCodeExecutor(this);
+            
         }
 
         private void InitRegisters()
@@ -54,12 +51,13 @@ namespace firefly.Cpu
             }
         }
 
+
         public UInt32 Read_32(UInt32 Address)
         {
             return Interconnector.Read_32(Interconnector.BIOS_Image, Address);
         }
 
-        private Instruction Decode(UInt32 Address)
+        public Instruction Decode(UInt32 Address)
         {
             return new Instruction(Address);
         }

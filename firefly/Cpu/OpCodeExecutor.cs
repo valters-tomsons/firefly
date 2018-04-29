@@ -7,7 +7,6 @@ namespace firefly.Cpu
     sealed class OpCodeExecutor
     {
         private readonly CPU CPU;
-
         private Dictionary<UInt32, Action<Instruction>> OpCodeTable;
 
         public OpCodeExecutor(CPU cpu)
@@ -28,6 +27,14 @@ namespace firefly.Cpu
         public void Execute(Instruction i)
         {
             OpCodeTable[i.Func](i);
+        }
+
+        public void EmulateCycle()
+        {
+            //Fetch & Decode
+            Instruction i = CPU.Decode(CPU.Read_32(CPU.PC));
+
+            Execute(i);
         }
 
         //Load Upper Immediate
