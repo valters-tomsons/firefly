@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using firefly.Domain;
 
 namespace firefly.Cpu
@@ -39,7 +37,13 @@ namespace firefly.Cpu
             {
                 { 0xF, LUI },
                 { 0xD, ORI },
+                { 0x2B, SW }
             };
+        }
+
+        private void PreserveZero()
+        {
+            CPU.R[0] = 0;
         }
 
         public void Execute(Instruction i)
@@ -56,6 +60,8 @@ namespace firefly.Cpu
 
         public void EmulateCycle()
         {
+            PreserveZero();
+
             //Fetch & Decode
             Instruction i = CPU.Decode(CPU.Read_32(CPU.PC));
 
@@ -76,6 +82,13 @@ namespace firefly.Cpu
         private void ORI(Instruction i)
         {
             UInt32 v;
+            //CPU.R[i.Index_T] = v;
+        }
+
+        //Store Word
+        private void SW(Instruction i)
+        {
+
         }
     }
 }
