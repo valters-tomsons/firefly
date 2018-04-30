@@ -64,12 +64,14 @@ namespace firefly.Cpu
 
             //Fetch & Decode
             Instruction i = CPU.Decode(CPU.Read_32(CPU.PC));
-            Console.WriteLine($"{i.RAW:X} {CPU.R[8]:X}");
+            Console.WriteLine($"0x{i.RAW:X} 0x{CPU.R[8]:X}");
 
             CPU.PC += 4;
 
             Execute(i);
         }
+
+        #region CPU_OPCODES
 
         //Load Upper Immediate
         private void LUI(Instruction i)
@@ -89,7 +91,10 @@ namespace firefly.Cpu
         //Store Word
         private void SW(Instruction i)
         {
-
+            UInt32 addr = CPU.R[i.Index_S] + i.Imm;
+            CPU.Store_32(addr, CPU.R[i.Index_T]);
         }
+
+        #endregion
     }
 }

@@ -30,5 +30,10 @@ namespace firefly.Cpu
 
             throw new UnhandledFetch32Exception(Address, Object);
         }
+
+        public UInt32 Store_32(UInt32 Address, UInt32 v)
+        {
+            throw new UnhandledStore32Exception(Address, v);
+        }
     }
 }

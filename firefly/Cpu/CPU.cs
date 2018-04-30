@@ -57,6 +57,11 @@ namespace firefly.Cpu
             return Interconnector.Read_32(Interconnector.BIOS_Image, Address);
         }
 
+        public UInt32 Store_32(UInt32 Address, UInt32 v)
+        {
+            return Interconnector.Store_32(Address, v);
+        }
+
         public Instruction Decode(UInt32 Address)
         {
             return new Instruction(Address);
