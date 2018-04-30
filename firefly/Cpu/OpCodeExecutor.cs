@@ -81,8 +81,8 @@ namespace firefly.Cpu
         //OR Immediate
         private void ORI(Instruction i)
         {
-            UInt32 v;
-            //CPU.R[i.Index_T] = v;
+            UInt32 v = CPU.R[i.Index_S] | i.Imm;
+            CPU.R[i.Index_T] = v;
         }
 
         //Store Word
