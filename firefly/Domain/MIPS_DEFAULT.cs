@@ -7,7 +7,7 @@ namespace firefly.Domain
 
     enum MIPS_DEFAULT_ENUM : UInt32
     {
-        PLACEHOLDER = 0x1337beef,
+        PLACEHOLDER = 0xdeadbeef,
 
         BIOS_KSEG1 = 0xbfc00000
     }

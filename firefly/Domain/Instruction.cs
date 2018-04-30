@@ -4,6 +4,7 @@ namespace firefly.Domain
 {
     public sealed class Instruction
     {
+        public UInt32 RAW;
         public UInt32 Func;
         public UInt32 Index_T;
         public UInt32 Index_S;
@@ -11,6 +12,8 @@ namespace firefly.Domain
 
         public Instruction(UInt32 Address)
         {
+            RAW = Address;
+
             //31:26 bits of instruction
             Func = Address >> 26;
 
