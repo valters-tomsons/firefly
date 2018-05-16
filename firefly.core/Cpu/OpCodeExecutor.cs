@@ -19,11 +19,19 @@ namespace firefly.core.Cpu
 
         public void Start()
         {
-            isRunning = true;
-            while (isRunning)
+            if (CPU.Interconnector.BIOS_Image.Data != null)
             {
-                EmulateCycle();
+                isRunning = true;
+                while (isRunning)
+                {
+                    EmulateCycle();
+                }
             }
+            else
+            {
+                Console.WriteLine("Cannot start interpreter without BIOS image.");
+            }
+            
         }
 
         public void Pause()
