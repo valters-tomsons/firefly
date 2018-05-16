@@ -31,7 +31,7 @@ namespace firefly.core.Cpu
             Interconnector = new Interconnector();
 
             Interpreter = new OpCodeExecutor(this);
-            Interpreter.Start();
+            //Interpreter.Start();
         }
 
         private void InitRegisters()

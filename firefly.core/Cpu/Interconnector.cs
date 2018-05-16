@@ -7,7 +7,7 @@ namespace firefly.core.Cpu
     //Connects CPU to all the Peripherals
     public sealed class Interconnector
     {
-        public static BIOS BIOS_Image;
+        public BIOS BIOS_Image;
 
         public Interconnector()
         {
@@ -16,9 +16,10 @@ namespace firefly.core.Cpu
 
         private void InitBIOS()
         {
+            Console.WriteLine("Initializing BIOS.");
             BIOS_Image = new BIOS();
-            BIOS_Image.CreateImage("scph5501.BIN");
-            Console.WriteLine("BIOS Initialized at Interconnect");
+            //BIOS_Image.CreateImage("scph5501.BIN");
+            
         }
 
         public UInt32 Read_32(PeripheralObject Object, UInt32 Address)
