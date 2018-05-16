@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace firefly.Domain
+namespace firefly.core.Domain
 {
     public sealed class Instruction
     {

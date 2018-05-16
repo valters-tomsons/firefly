@@ -1,9 +1,9 @@
 ﻿using System;
-using firefly.Domain;
+using firefly.core.Domain;
 
-namespace firefly.Cpu
+namespace firefly.core.Cpu
 {
-    sealed class CPU
+    public sealed class CPU
     {
         //General Purpose Registers
         public UInt32[] R = new UInt32[32];

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using firefly.Peripherals;
+using firefly.core.Peripherals;
 
-namespace firefly.Exceptions
+namespace firefly.core.Exceptions
 {
     class UnhandledFetch32Exception : Exception
     {

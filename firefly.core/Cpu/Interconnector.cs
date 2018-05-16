@@ -1,11 +1,11 @@
 ﻿using System;
-using firefly.Peripherals;
-using firefly.Exceptions;
+using firefly.core.Exceptions;
+using firefly.core.Peripherals;
 
-namespace firefly.Cpu
+namespace firefly.core.Cpu
 {
     //Connects CPU to all the Peripherals
-    sealed class Interconnector
+    public sealed class Interconnector
     {
         public static BIOS BIOS_Image;
 

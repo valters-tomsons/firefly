@@ -1,7 +1,7 @@
 ﻿using System;
-using firefly.Domain;
+using firefly.core.Domain;
 
-namespace firefly.Exceptions
+namespace firefly.core.Exceptions
 {
     class UnhandledInstructionException : Exception
     {

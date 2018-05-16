@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using firefly.Domain;
+using firefly.core.Domain;
 
-namespace firefly.Cpu
+namespace firefly.core.Cpu
 {
-    sealed class OpCodeExecutor
+    public sealed class OpCodeExecutor
     {
         private readonly CPU CPU;
         private Dictionary<UInt32, Action<Instruction>> OpCodeTable;

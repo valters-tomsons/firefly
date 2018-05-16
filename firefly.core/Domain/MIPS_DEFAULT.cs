@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace firefly.Domain
+namespace firefly.core.Domain
 {
     //Contains default (reset values) for any register
     //All should be unsigned 32-bit integers

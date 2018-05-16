@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using firefly.Domain;
+using firefly.core.Domain;
 
-namespace firefly.Peripherals
+namespace firefly.core.Peripherals
 {
     public sealed class BIOS : PeripheralObject
     {
@@ -11,6 +11,11 @@ namespace firefly.Peripherals
             ExpectedSize = 512 * 1024;
             Range = new Range((UInt32) MIPS_DEFAULT_ENUM.BIOS_KSEG1, ExpectedSize);
         }
+
+        public void CreateImage(byte[] buffer)
+        {
+        
+        } 
 
         public void CreateImage(string name)
         {

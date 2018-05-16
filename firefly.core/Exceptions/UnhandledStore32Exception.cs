@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace firefly.Exceptions
+namespace firefly.core.Exceptions
 {
     class UnhandledStore32Exception : Exception
     {

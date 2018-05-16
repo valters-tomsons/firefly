@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2015
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "firefly", "firefly\firefly.csproj", "{9AC65CD1-C535-465B-8B80-ADB1CA0E54E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "firefly", "firefly\firefly.csproj", "{9AC65CD1-C535-465B-8B80-ADB1CA0E54E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "firefly.core", "firefly.core\firefly.core.csproj", "{DA33FABD-7446-4D41-B3D5-8573D201182A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{9AC65CD1-C535-465B-8B80-ADB1CA0E54E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AC65CD1-C535-465B-8B80-ADB1CA0E54E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AC65CD1-C535-465B-8B80-ADB1CA0E54E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA33FABD-7446-4D41-B3D5-8573D201182A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA33FABD-7446-4D41-B3D5-8573D201182A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA33FABD-7446-4D41-B3D5-8573D201182A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA33FABD-7446-4D41-B3D5-8573D201182A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

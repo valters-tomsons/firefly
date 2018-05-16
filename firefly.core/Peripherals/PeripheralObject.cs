@@ -1,7 +1,7 @@
 ﻿using System;
-using firefly.Domain;
+using firefly.core.Domain;
 
-namespace firefly.Peripherals
+namespace firefly.core.Peripherals
 {
     public class PeripheralObject
     {
