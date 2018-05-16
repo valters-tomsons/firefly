@@ -22,6 +22,11 @@ namespace firefly.core.Cpu
 
         public UInt32 Read_32(PeripheralObject Object, UInt32 Address)
         {
+            if (Address % 4 != 0)
+            {
+                throw new UnalignedMemoryAccessException(Address);
+            }
+
             if (Object.Range.Contains(Address, out var offset))
             {
                 return Object.Read_32(offset);
@@ -32,6 +37,11 @@ namespace firefly.core.Cpu
 
         public UInt32 Store_32(UInt32 Address, UInt32 v)
         {
+            if (Address % 4 != 0)
+            {
+                throw new UnalignedMemoryAccessException(Address);
+            }
+
             throw new UnhandledStore32Exception(Address, v);
         }
     }
