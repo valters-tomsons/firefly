@@ -29,3 +29,5 @@ https://www.fasterthan.life/blog/2017/7/11/i-am-graphics-and-so-can-you-part-1
 https://software.intel.com/en-us/articles/api-without-secrets-introduction-to-vulkan-part-1
 
 https://vulkan.lunarg.com/doc/sdk/1.1.73.0/windows/getting_started.html
+
+https://github.com/mellinoe/vk
