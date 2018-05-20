@@ -60,7 +60,7 @@ namespace firefly.core.Cpu
 
             //Fetch & Decode
             Instruction i = CPU.Decode(CPU.Read_32(CPU.PC));
-            Console.WriteLine($"0x{i.RAW:X} 0x{CPU.R[8]:X}");
+            Console.WriteLine($"0x{i.Raw:X} 0x{CPU.R[8]:X}");
 
             CPU.PC += 4;
 
