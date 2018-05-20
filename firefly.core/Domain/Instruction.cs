@@ -5,12 +5,17 @@ namespace firefly.core.Domain
     public struct Instruction
     {
         public UInt32 Raw;
+
         public UInt32 Func;
+        public UInt32 SubFunc;
+
         public UInt32 Index_T;
         public UInt32 Index_S;
         public UInt32 Index_D;
+
         public UInt32 Imm;
         public Int32 Imm_Se;
+        
 
         public Instruction(UInt32 Address)
         {
@@ -18,6 +23,9 @@ namespace firefly.core.Domain
 
             //31:26 bits of instruction
             Func = Address >> 26;
+
+            //5:0 bits of instruction
+            SubFunc = Address & 0x3f;
 
             //Register index in bits 20:16
             Index_T = (Address >> 16) & 0x1F;
