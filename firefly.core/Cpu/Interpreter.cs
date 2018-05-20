@@ -45,7 +45,8 @@ namespace firefly.core.Cpu
             {
                 { 0xF, LUI },
                 { 0xD, ORI },
-                { 0x2B, SW }
+                { 0x2B, SW },
+                { 0x0, SLL }
             };
         }
 
@@ -101,6 +102,12 @@ namespace firefly.core.Cpu
         {
             UInt32 addr = CPU.R[i.Index_S] + i.Imm;
             CPU.Store_32(addr, CPU.R[i.Index_T]);
+        }
+
+        private void SLL(Instruction i)
+        {
+            var v = CPU.R[i.Index_T] << (Int16)i.Imm_Shift;
+            CPU.R[i.Index_D] = v;
         }
 
         #endregion
