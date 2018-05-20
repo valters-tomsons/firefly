@@ -15,6 +15,7 @@ namespace firefly.core.Domain
 
         public UInt32 Imm;
         public Int32 Imm_Se;
+        public UInt32 Imm_Shift;
         
 
         public Instruction(UInt32 Address)
@@ -41,6 +42,9 @@ namespace firefly.core.Domain
 
             //Immediate value in bits 16:0 as sign-extended 32bit
             Imm_Se = (Int16)(Address & 0xffff);
+
+            //Shift Immediate values stored in 10:6
+            Imm_Shift = (Address >> 6) & 0x1F;
         }
     }
 }
