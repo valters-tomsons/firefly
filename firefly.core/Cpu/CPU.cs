@@ -16,7 +16,7 @@ namespace firefly.core.Cpu
         public UInt32 PC;
 
         public Interconnector Interconnector;
-        public OpCodeExecutor Interpreter;
+        public Interpreter Interpreter;
 
         public CPU()
         {
@@ -30,7 +30,7 @@ namespace firefly.core.Cpu
             InitRegisters();
             Interconnector = new Interconnector();
 
-            Interpreter = new OpCodeExecutor(this);
+            Interpreter = new Interpreter(this);
             //Interpreter.Start();
         }
 

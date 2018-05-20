@@ -4,14 +4,14 @@ using firefly.core.Domain;
 
 namespace firefly.core.Cpu
 {
-    public sealed class OpCodeExecutor
+    public sealed class Interpreter
     {
         private readonly CPU CPU;
         private Dictionary<UInt32, Action<Instruction>> OpCodeTable;
         private bool isRunning = false;
         //private Thread InterpreterThread;
 
-        public OpCodeExecutor(CPU cpu)
+        public Interpreter(CPU cpu)
         {
             Init_OpCodeTable();
             CPU = cpu;
@@ -54,18 +54,6 @@ namespace firefly.core.Cpu
             CPU.R[0] = 0;
         }
 
-        public void Execute(Instruction i)
-        {
-            try
-            {
-                OpCodeTable[i.Func](i);
-            }
-            catch (KeyNotFoundException)
-            {
-                throw new Exceptions.UnhandledInstructionException(i);
-            }
-        }
-
         public void EmulateCycle()
         {
             PreserveZero();
@@ -77,6 +65,18 @@ namespace firefly.core.Cpu
             CPU.PC += 4;
 
             Execute(i);
+        }
+
+        public void Execute(Instruction i)
+        {
+            try
+            {
+                OpCodeTable[i.Func](i);
+            }
+            catch (KeyNotFoundException)
+            {
+                throw new Exceptions.UnhandledInstructionException(i);
+            }
         }
 
         #region CPU_OPCODES
