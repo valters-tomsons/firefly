@@ -2,7 +2,7 @@
 
 namespace firefly.core.Domain
 {
-    public sealed class Instruction
+    public struct Instruction
     {
         public UInt32 RAW;
         public UInt32 Func;
