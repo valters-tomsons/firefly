@@ -9,6 +9,7 @@ namespace firefly.core.Domain
         public UInt32 Index_T;
         public UInt32 Index_S;
         public UInt32 Imm;
+        public Int32 Imm_Se;
 
         public Instruction(UInt32 Address)
         {
@@ -25,6 +26,9 @@ namespace firefly.core.Domain
 
             //Immedaite value in bits 16:0
             Imm = Address & 0xffff;
+
+            //Immediate value in bits 16:0 as sign-extended 32bit
+            Imm_Se = (Int16)(RAW & 0xffff);
         }
     }
 }
