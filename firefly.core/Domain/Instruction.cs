@@ -4,7 +4,7 @@ namespace firefly.core.Domain
 {
     public struct Instruction
     {
-        public UInt32 RAW;
+        public UInt32 Raw;
         public UInt32 Func;
         public UInt32 Index_T;
         public UInt32 Index_S;
@@ -13,7 +13,7 @@ namespace firefly.core.Domain
 
         public Instruction(UInt32 Address)
         {
-            RAW = Address;
+            Raw = Address;
 
             //31:26 bits of instruction
             Func = Address >> 26;
@@ -28,7 +28,7 @@ namespace firefly.core.Domain
             Imm = Address & 0xffff;
 
             //Immediate value in bits 16:0 as sign-extended 32bit
-            Imm_Se = (Int16)(RAW & 0xffff);
+            Imm_Se = (Int16)(Raw & 0xffff);
         }
     }
 }
