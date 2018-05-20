@@ -8,6 +8,7 @@ namespace firefly.core.Domain
         public UInt32 Func;
         public UInt32 Index_T;
         public UInt32 Index_S;
+        public UInt32 Index_D;
         public UInt32 Imm;
         public Int32 Imm_Se;
 
@@ -24,11 +25,14 @@ namespace firefly.core.Domain
             //Register index in bits 25:21
             Index_S  = (Address >> 21) & 0x1F;
 
+            //Register index in bits 15:11
+            Index_D = (Address >> 11) & 0x1F;
+
             //Immedaite value in bits 16:0
             Imm = Address & 0xffff;
 
             //Immediate value in bits 16:0 as sign-extended 32bit
-            Imm_Se = (Int16)(Raw & 0xffff);
+            Imm_Se = (Int16)(Address & 0xffff);
         }
     }
 }
