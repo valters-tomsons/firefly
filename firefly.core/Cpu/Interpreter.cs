@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using firefly.core.Domain;
 
 namespace firefly.core.Cpu
@@ -8,7 +10,7 @@ namespace firefly.core.Cpu
     {
         private readonly CPU CPU;
         private Dictionary<UInt32, Action<Instruction>> OpCodeTable;
-        private bool isRunning = false;
+        private Boolean isRunning = false;
         //private Thread InterpreterThread;
 
         public Interpreter(CPU cpu)
@@ -46,7 +48,8 @@ namespace firefly.core.Cpu
                 { 0xF, LUI },
                 { 0xD, ORI },
                 { 0x2B, SW },
-                { 0x0, SLL }
+                { 0x0, SLL },
+                { 0x9, ADDIU}
             };
         }
 
@@ -104,10 +107,18 @@ namespace firefly.core.Cpu
             CPU.Store_32(addr, CPU.R[i.Index_T]);
         }
 
+        //Shift Left Logical
         private void SLL(Instruction i)
         {
-            var v = CPU.R[i.Index_T] << (Int16)i.Imm_Shift;
+            UInt32 v = CPU.R[i.Index_T] << (Int16)i.Imm_Shift;
             CPU.R[i.Index_D] = v;
+        }
+
+        //Add Immediate Unsigned
+        private void ADDIU(Instruction i)
+        {
+            UInt32 v = CPU.R[i.Index_S] + (UInt32)i.Imm_Se;
+            CPU.R[i.Index_T] = v;
         }
 
         #endregion
