@@ -36,7 +36,7 @@ namespace firefly.core.Cpu
         private void InitRegisters()
         {
             PC = (UInt32)MIPS_DEFAULT_ENUM.BIOS_KSEG1;
-            NextInstruction = new Instruction(0x0);
+            //NextInstruction = new Instruction(PC);
 
             for (int i = 0; i < R.Length; i++)
             {
@@ -60,11 +60,6 @@ namespace firefly.core.Cpu
         public void Store_32(UInt32 Address, UInt32 v)
         {
             Interconnector.Store_32(Address, v);
-        }
-
-        public Instruction Decode(UInt32 Address)
-        {
-            return new Instruction(Address);
         }
     }
 }
