@@ -9,25 +9,20 @@ namespace firefly.core.Cpu
     public sealed class Interconnector
     {
         public BIOS BIOS_Image;
-        public Range MemControl;
-        public Range RAM_SIZE;
+
+        public Range MEM_CONTROL = new Range(0x1f801000, 36);
+        public Range RAM_SIZE = new Range(0x1f801060, 4);
+        public Range CACHE_CONTROL = new Range(0xfffe0130, 4);
 
         public Interconnector()
         {
             InitBIOS();
-            InitRanges();
         }
 
         private void InitBIOS()
         {
             Console.WriteLine("Initializing BIOS.");
             BIOS_Image = new BIOS();
-        }
-
-        private void InitRanges()
-        {
-            MemControl = new Range(0x1f801000, 36);
-            RAM_SIZE = new Range(0x1f801060, 4);
         }
 
         public UInt32 Read_32(PeripheralObject Object, UInt32 Address)
@@ -53,7 +48,7 @@ namespace firefly.core.Cpu
                 throw new UnalignedMemoryAccessException(Address);
             }
 
-            if (MemControl.Contains(Address, out UInt32 offsetc))
+            if (MEM_CONTROL.Contains(Address, out UInt32 offsetc))
             {
                 Logger.Message($"Unimplemented Store_32 0x{offsetc:X} 0x{Address:X}", LogSeverity.Error, true);
             }

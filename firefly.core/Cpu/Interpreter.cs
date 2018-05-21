@@ -97,6 +97,7 @@ namespace firefly.core.Cpu
             }
             catch (KeyNotFoundException)
             {
+                Logger.Message($"Unhandled Instruction 0x{i.Address:X} {i.Func:X}", LogSeverity.Error);
                 throw new Exceptions.UnhandledInstructionException(i);
             }
         }
