@@ -14,6 +14,7 @@ namespace firefly.core.Cpu
 
         //Program Counter Register
         public UInt32 PC;
+        public Instruction NextInstruction;
 
         public Interconnector Interconnector;
         public Interpreter Interpreter;
@@ -29,14 +30,13 @@ namespace firefly.core.Cpu
 
             InitRegisters();
             Interconnector = new Interconnector();
-
             Interpreter = new Interpreter(this);
-            //Interpreter.Start();
         }
 
         private void InitRegisters()
         {
             PC = (UInt32)MIPS_DEFAULT_ENUM.BIOS_KSEG1;
+            NextInstruction = new Instruction(0x0);
 
             for (int i = 0; i < R.Length; i++)
             {
