@@ -54,14 +54,15 @@ namespace firefly.core.Cpu
 
             if (MemControl.Range.Contains(Address, out UInt32 offset))
             {
-                Logger.Message($"Unimplemented Store_32 | 0x{Address}", LogSeverity.Error);
+                Logger.Message($"Unimplemented Store_32 0x{Address:X}", LogSeverity.Error, true);
             }
             else if (Address == 0x1F801060)
             {
-                Logger.Message($"RAM_SIZE register unimplemented | 0x{Address}", LogSeverity.Warning);
+                Logger.Message($"Unimplemented RAM_SIZE 0x{Address:X}", LogSeverity.Warning, true);
             }
             else
             {
+                Console.ReadLine();
                 throw new UnhandledStore32Exception(Address, v);
             }
         }
