@@ -69,7 +69,20 @@ namespace firefly.core.Cpu
             CPU.NextInstruction = new Instruction(CPU.Read_32(PC));
 
             Console.WriteLine();
-            Console.Write("{0, 12} {1, 12} {2, 12}", OpCodeTable[i.Func].Method.Name, $"0x{i.Address:X}", $"0x{i.Imm_Jump:X}");
+
+            try
+            {
+                Console.Write("{0, 12} {1, 12} {2, 12}", OpCodeTable[i.Func].Method.Name, $"0x{i.Address:X}",
+                    $"0x{i.Imm_Jump:X}");
+            }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("{0, 12} {1, 12} {2, 12}", "NULL", $"0x{i.Address:X}",
+                    $"0x{i.Imm_Jump:X}");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+           
 
             CPU.PC += 4;
 

@@ -9,12 +9,13 @@ namespace firefly.core.Cpu
     public sealed class Interconnector
     {
         public BIOS BIOS_Image;
-        public MemControl MemControl;
+        public Range MemControl;
+        public Range RAM_SIZE;
 
         public Interconnector()
         {
             InitBIOS();
-            InitMemControl();
+            InitRanges();
         }
 
         private void InitBIOS()
@@ -23,10 +24,10 @@ namespace firefly.core.Cpu
             BIOS_Image = new BIOS();
         }
 
-        private void InitMemControl()
+        private void InitRanges()
         {
-            Console.WriteLine("Initializing Memory controller (MemControl)");
-            MemControl = new MemControl();
+            MemControl = new Range(0x1f801000, 36);
+            RAM_SIZE = new Range(0x1f801060, 4);
         }
 
         public UInt32 Read_32(PeripheralObject Object, UInt32 Address)
@@ -52,18 +53,17 @@ namespace firefly.core.Cpu
                 throw new UnalignedMemoryAccessException(Address);
             }
 
-            if (MemControl.Range.Contains(Address, out UInt32 offset))
+            if (MemControl.Contains(Address, out UInt32 offsetc))
             {
-                Logger.Message($"Unimplemented Store_32 0x{Address:X}", LogSeverity.Error, true);
+                Logger.Message($"Unimplemented Store_32 0x{offsetc:X} 0x{Address:X}", LogSeverity.Error, true);
             }
-            else if (Address == 0x1F801060)
+            else if (RAM_SIZE.Contains(Address, out UInt32 offsetr))
             {
-                Logger.Message($"Unimplemented RAM_SIZE 0x{Address:X}", LogSeverity.Warning, true);
+                Logger.Message($"Unimplemented RAM_SIZE 0x{offsetr:X} 0x{Address:X}", LogSeverity.Warning, true);
             }
             else
             {
-                Console.ReadLine();
-                throw new UnhandledStore32Exception(Address, v);
+                Logger.Message($"Unimplemented Store_32 0x{Address:X}", LogSeverity.Error, true);
             }
         }
     }
