@@ -16,6 +16,7 @@ namespace firefly.core.Domain
         public UInt32 Imm;
         public Int32 Imm_Se;
         public UInt32 Imm_Shift;
+        public UInt32 Imm_Jump;
         
 
         public Instruction(UInt32 Address)
@@ -45,6 +46,9 @@ namespace firefly.core.Domain
 
             //Shift Immediate values stored in 10:6
             Imm_Shift = (Address >> 6) & 0x1F;
+
+            //Jump target in bits 25:0
+            Imm_Jump = Address & 0x3ffffff;
         }
     }
 }

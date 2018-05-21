@@ -55,6 +55,10 @@ namespace firefly.core.Cpu
             {
                 Console.WriteLine("Store32 unimplemented");
             }
+            else if (Address == 0x1F801060)
+            {
+                Console.WriteLine("RAM_SIZE register unimplemented");
+            }
             else
             {
                 throw new UnhandledStore32Exception(Address, v);

@@ -49,7 +49,8 @@ namespace firefly.core.Cpu
                 { 0xD, ORI },
                 { 0x2B, SW },
                 { 0x0, SLL },
-                { 0x9, ADDIU}
+                { 0x9, ADDIU},
+                { 0x2, JMP }
             };
         }
 
@@ -119,6 +120,12 @@ namespace firefly.core.Cpu
         {
             UInt32 v = CPU.R[i.Index_S] + (UInt32)i.Imm_Se;
             CPU.R[i.Index_T] = v;
+        }
+
+        //Jump (J)
+        private void JMP(Instruction i)
+        {
+            CPU.PC = (CPU.PC & 0xf0000000) | (i.Imm_Jump << 2);
         }
 
         #endregion
