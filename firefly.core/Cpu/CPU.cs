@@ -36,7 +36,7 @@ namespace firefly.core.Cpu
         private void InitRegisters()
         {
             PC = (UInt32)MIPS_DEFAULT_ENUM.BIOS_KSEG1;
-            //NextInstruction = new Instruction(PC);
+            NextInstruction = new Instruction(0x0);
 
             for (int i = 0; i < R.Length; i++)
             {

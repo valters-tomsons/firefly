@@ -86,7 +86,7 @@ namespace firefly.core.Cpu
 
             CPU.PC += 4;
 
-            Execute(CPU.NextInstruction);
+            Execute(i);
         }
 
         public void Execute(Instruction i)
