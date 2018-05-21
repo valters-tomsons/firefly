@@ -69,7 +69,7 @@ namespace firefly.core.Cpu
             CPU.NextInstruction = new Instruction(CPU.Read_32(PC));
 
             Console.WriteLine();
-            Console.Write("{0, 12} {1, 12} {2, 12}", OpCodeTable[i.Func].Method.Name, $"0x{i.Raw:X}", $"0x{i.Imm_Jump:X}");
+            Console.Write("{0, 12} {1, 12} {2, 12}", OpCodeTable[i.Func].Method.Name, $"0x{i.Address:X}", $"0x{i.Imm_Jump:X}");
 
             CPU.PC += 4;
 
