@@ -79,9 +79,6 @@ namespace firefly.core.Cpu
 
             Instruction i = CPU.NextInstruction;
             CPU.NextInstruction = new Instruction(CPU.Read_32(PC));
-
-            Console.WriteLine();
-
             CPU.PC += 4;
 
             Execute(i);
@@ -104,6 +101,8 @@ namespace firefly.core.Cpu
 
         private void LogInstruction(Instruction i)
         {
+            Console.WriteLine();
+
             try
             {
                 //Log SPECIAL subfunctions
