@@ -9,13 +9,17 @@ namespace firefly.core.Cpu
     public sealed class Interpreter
     {
         private readonly CPU CPU;
+
         private Dictionary<UInt32, Action<Instruction>> OpCodeTable;
+        private Dictionary<UInt32, Action<Instruction>> SpecialCodeTable;
+
         private Boolean isRunning = false;
         //private Thread InterpreterThread;
 
         public Interpreter(CPU cpu)
         {
             Init_OpCodeTable();
+            Init_SpecialTable();
             CPU = cpu;
         }
 
@@ -45,12 +49,20 @@ namespace firefly.core.Cpu
         {
             OpCodeTable = new Dictionary<UInt32, Action<Instruction>>
             {
+                { 0x0, SPECIAL },
                 { 0xF, LUI },
                 { 0xD, ORI },
                 { 0x2B, SW },
-                { 0x0, SLL },
                 { 0x9, ADDIU},
                 { 0x2, JMP }
+            };
+        }
+
+        private void Init_SpecialTable()
+        {
+            SpecialCodeTable = new Dictionary<UInt32, Action<Instruction>>
+            {
+                { 0x0, SLL }
             };
         }
 
@@ -70,20 +82,6 @@ namespace firefly.core.Cpu
 
             Console.WriteLine();
 
-            try
-            {
-                Console.Write("{0, 12} {1, 12} {2, 12}", OpCodeTable[i.Func].Method.Name, $"0x{i.Address:X}",
-                    $"0x{i.Imm_Jump:X}");
-            }
-            catch
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write("{0, 12} {1, 12} {2, 12}", "NULL", $"0x{i.Address:X}",
-                    $"0x{i.Imm_Jump:X}");
-                Console.ForegroundColor = ConsoleColor.White;
-            }
-           
-
             CPU.PC += 4;
 
             Execute(i);
@@ -91,6 +89,8 @@ namespace firefly.core.Cpu
 
         public void Execute(Instruction i)
         {
+            LogInstruction(i);
+
             try
             {
                 OpCodeTable[i.Func](i);
@@ -100,6 +100,63 @@ namespace firefly.core.Cpu
                 Logger.Message($"Unhandled Instruction 0x{i.Address:X} {i.Func:X}", LogSeverity.Error);
                 throw new Exceptions.UnhandledInstructionException(i);
             }
+        }
+
+        private void LogInstruction(Instruction i)
+        {
+            try
+            {
+                //Log SPECIAL subfunctions
+                if (i.Func == 0x0)
+                {
+                    //SLL NOP
+                    if (CPU.R[i.Index_T] << (Int16)i.Imm_Shift == 0x0)
+                    {
+                        Console.Write(
+                            "{0, 12}",
+                            "NOP"
+                        );
+                    }
+                    else
+                    {
+                        Console.Write(
+                            "{0, 12} {1, 12} {2, 12}",
+                            SpecialCodeTable[i.SubFunc].Method.Name,
+                            $"0x{i.Address:X}",
+                            $"0x{i.SubFunc:X}"
+                        );
+                    }
+                    
+                }
+                else
+                {
+                    //Log OPCODES
+                    Console.Write(
+                        "{0, 12} {1, 12} {2, 12}",
+                        OpCodeTable[i.Func].Method.Name,
+                        $"0x{i.Address:X}",
+                        $"0x{CPU.R[0]:X}"
+                    );
+                }
+                
+            }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+
+                Console.Write(
+                    "{0, 12} {1, 12} {2, 12}", 
+                    "NULL", $"0x{i.Address:X}",
+                    $"0x{i.Imm_Jump:X}"
+                    );
+
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+        }
+
+        private void SPECIAL(Instruction i)
+        {
+            SpecialCodeTable[i.SubFunc](i);
         }
 
         #region CPU_OPCODES
