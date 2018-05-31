@@ -92,9 +92,10 @@ namespace firefly.core.Cpu
             {
                 OpCodeTable[i.Func](i);
             }
-            catch (KeyNotFoundException)
+            catch (KeyNotFoundException e)
             {
                 Logger.Message($"Unhandled Instruction 0x{i.Address:X} {i.Func:X}", LogSeverity.Error);
+                Console.WriteLine();
                 throw new Exceptions.UnhandledInstructionException(i);
             }
         }
@@ -111,10 +112,14 @@ namespace firefly.core.Cpu
                     //SLL NOP
                     if (CPU.R[i.Index_T] << (Int16)i.Imm_Shift == 0x0)
                     {
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+
                         Console.Write(
                             "{0, 12}",
                             "NOP"
                         );
+
+                        Console.ForegroundColor = ConsoleColor.White;
                     }
                     else
                     {
