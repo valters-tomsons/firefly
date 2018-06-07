@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using firefly.core.Domain;
 
 namespace firefly.core.Cpu
@@ -13,7 +11,7 @@ namespace firefly.core.Cpu
         private Dictionary<UInt32, Action<Instruction>> OpCodeTable;
         private Dictionary<UInt32, Action<Instruction>> SpecialCodeTable;
 
-        private Boolean isRunning = false;
+        private Boolean isRunning;
         //private Thread InterpreterThread;
 
         public Interpreter(CPU cpu)
@@ -49,12 +47,14 @@ namespace firefly.core.Cpu
         {
             OpCodeTable = new Dictionary<UInt32, Action<Instruction>>
             {
-                { 0x0, SPECIAL },
                 { 0xF, LUI },
                 { 0xD, ORI },
                 { 0x2B, SW },
                 { 0x9, ADDIU},
-                { 0x2, JMP }
+                { 0x2, JMP },
+
+                { 0x0, SPECIAL },
+                { 0x10, MTC0 }
             };
         }
 
@@ -62,7 +62,8 @@ namespace firefly.core.Cpu
         {
             SpecialCodeTable = new Dictionary<UInt32, Action<Instruction>>
             {
-                { 0x0, SLL }
+                { 0x0, SLL },
+                { 0x25, OR }
             };
         }
 
@@ -92,9 +93,9 @@ namespace firefly.core.Cpu
             {
                 OpCodeTable[i.Func](i);
             }
-            catch (KeyNotFoundException e)
+            catch (KeyNotFoundException)
             {
-                Logger.Message($"Unhandled Instruction 0x{i.Address:X} {i.Func:X}", LogSeverity.Error);
+                Logger.Message($"Unhandled Instruction 0x{i.Address:X} 0x{i.Func:X}", LogSeverity.Error);
                 Console.WriteLine();
                 throw new Exceptions.UnhandledInstructionException(i);
             }
@@ -136,10 +137,9 @@ namespace firefly.core.Cpu
                 {
                     //Log OPCODES
                     Console.Write(
-                        "{0, 12} {1, 12} {2, 12}",
+                        "{0, 12} {1, 12}",
                         OpCodeTable[i.Func].Method.Name,
-                        $"0x{i.Address:X}",
-                        $"0x{CPU.R[0]:X}"
+                        $"0x{i.Address:X}"
                     );
                 }
                 
@@ -160,7 +160,23 @@ namespace firefly.core.Cpu
 
         private void SPECIAL(Instruction i)
         {
-            SpecialCodeTable[i.SubFunc](i);
+            try
+            {
+                SpecialCodeTable[i.SubFunc](i);
+            }
+            catch(KeyNotFoundException)
+            {
+                Logger.Message($"Unhandled SPECIAL Instruction 0x{i.Address:X} 0x{i.Func:X} 0x{i.SubFunc:X}", LogSeverity.Error);
+                Console.WriteLine();
+                throw new Exceptions.UnhandledInstructionException(i);
+            }
+            
+        }
+
+        private void MTC0(Instruction i)
+        {
+            UInt32 v = CPU.R[i.Index_T];
+            UInt32 c = i.Index_D;
         }
 
         #region CPU_OPCODES
@@ -205,6 +221,12 @@ namespace firefly.core.Cpu
         private void JMP(Instruction i)
         {
             CPU.PC = (CPU.PC & 0xf0000000) | (i.Imm_Jump << 2);
+        }
+
+        private void OR(Instruction i)
+        {
+            UInt32 v = CPU.R[i.Index_S] | CPU.R[i.Index_T];
+            CPU.R[i.Index_D] = v;
         }
 
         #endregion
