@@ -56,6 +56,10 @@ namespace firefly.core.Cpu
             {
                 Logger.Message($"Unimplemented RAM_SIZE 0x{offsetr:X} 0x{Address:X}", LogSeverity.Warning, true);
             }
+            else if (CACHE_CONTROL.Contains(Address, out UInt32 offsetcc))
+            {
+                Logger.Message($"Unimplemented CACHE_CONTROL 0x{offsetcc:X} 0x{Address:X}", LogSeverity.Warning, true);
+            }
             else
             {
                 Logger.Message($"Unimplemented Store_32 0x{Address:X}", LogSeverity.Error, true);
