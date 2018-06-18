@@ -12,7 +12,6 @@ namespace firefly.core.Cpu
         private Dictionary<UInt32, Action<Instruction>> SpecialCodeTable;
 
         private Boolean isRunning;
-        //private Thread InterpreterThread;
 
         public Interpreter(CPU cpu)
         {
