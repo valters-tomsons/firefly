@@ -19,6 +19,8 @@ namespace firefly.core.Cpu
         public Interconnector Interconnector;
         public Interpreter Interpreter;
 
+        public UInt32 SR;
+
         public CPU()
         {
             Reset();

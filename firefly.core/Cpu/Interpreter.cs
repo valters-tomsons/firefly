@@ -173,10 +173,18 @@ namespace firefly.core.Cpu
             
         }
 
+        private void Branch(UInt32 offset)
+        {
+
+        }
+
+        //Move to Coprocessor 0
         private void MTC0(Instruction i)
         {
             UInt32 v = CPU.R[i.Index_T];
             UInt32 c = i.Index_D;
+
+            //todo
         }
 
         #region CPU_OPCODES
@@ -227,6 +235,15 @@ namespace firefly.core.Cpu
         {
             UInt32 v = CPU.R[i.Index_S] | CPU.R[i.Index_T];
             CPU.R[i.Index_D] = v;
+        }
+
+        //Branch If Not Equal
+        private void BNE(Instruction i)
+        {
+            if (i.Index_S != i.Index_T)
+            {
+                Branch((UInt16)i.Imm_Se);
+            }
         }
 
         #endregion
