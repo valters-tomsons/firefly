@@ -7,6 +7,8 @@ http://www.psxdev.net/forum/viewtopic.php?f=49&t=147
 
 https://github.com/simias/psx-guide
 
+https://drive.google.com/file/d/12YuSQOPm-w0RqTrIZQPymz17g5I9CFNO/view?usp=sharing
+
 http://problemkaputt.de/psx-spx.htm
 
 https://github.com/simias/rustation
