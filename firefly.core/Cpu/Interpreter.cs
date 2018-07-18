@@ -174,7 +174,11 @@ namespace firefly.core.Cpu
 
         private void Branch(UInt32 offset)
         {
-            //todo
+            //offset immediates are shifted two places since PC addresses must be 32bit at all times
+            offset = offset << 2;
+
+            //branch to value and compensate for hardcoded PC+4 in EmulateCycle()
+            CPU.PC = CPU.PC + offset - 4;
         }
 
         //Move to Coprocessor 0
