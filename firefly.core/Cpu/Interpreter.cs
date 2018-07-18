@@ -51,6 +51,7 @@ namespace firefly.core.Cpu
                 { 0x2B, SW },
                 { 0x9, ADDIU},
                 { 0x2, JMP },
+                { 0x5, BNE },
 
                 { 0x0, SPECIAL },
                 { 0x10, MTC0 }
