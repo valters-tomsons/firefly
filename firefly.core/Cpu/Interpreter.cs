@@ -52,6 +52,7 @@ namespace firefly.core.Cpu
                 { 0x9, ADDIU},
                 { 0x2, JMP },
                 { 0x5, BNE },
+                { 0x8, ADDI },
 
                 { 0x0, SPECIAL },
                 { 0x10, MTC0 }
@@ -248,6 +249,18 @@ namespace firefly.core.Cpu
             {
                 Branch((UInt16)i.Imm_Se);
             }
+        }
+
+        //Add Immediate
+        private void ADDI(Instruction i)
+        {
+            var I  = (Int32)i.Imm_Se;
+            var t = i.Index_T;
+            var s = i.Index_S;
+            var st = (Int32)CPU.R[s];
+
+            Int32 v = checked(st + I);
+            CPU.R[t] = (UInt32)v;
         }
 
         #endregion
