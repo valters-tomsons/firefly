@@ -17,6 +17,8 @@ http://emulation-general.wikia.com/wiki/PlayStation_Emulators#Emulation_issues
 
 http://www.psxdev.net/forum/viewtopic.php?f=49&t=65
 
+http://hitmen.c02.at/files/docs/psx/psx.pdf
+
 ## Vulkan
 https://vulkan-tutorial.com/Introduction
 
