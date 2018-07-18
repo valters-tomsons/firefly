@@ -10,6 +10,7 @@ namespace firefly.core.Cpu
 
         private Dictionary<UInt32, Action<Instruction>> OpCodeTable;
         private Dictionary<UInt32, Action<Instruction>> SpecialCodeTable;
+        private Dictionary<UInt32, Action<Instruction>> COP0CodeTable;
 
         private Boolean isRunning;
 
@@ -17,6 +18,7 @@ namespace firefly.core.Cpu
         {
             Init_OpCodeTable();
             Init_SpecialTable();
+            Init_COP0Table();
             CPU = cpu;
         }
 
@@ -65,6 +67,14 @@ namespace firefly.core.Cpu
             {
                 { 0x0, SLL },
                 { 0x25, OR }
+            };
+        }
+
+        private void Init_COP0Table()
+        {
+            COP0CodeTable = new Dictionary<UInt32, Action<Instruction>>
+            {
+                {0xC, SetCOP0StatusRegister}
             };
         }
 
@@ -180,16 +190,24 @@ namespace firefly.core.Cpu
             offset = offset << 2;
 
             //branch to value and compensate for hardcoded PC+4 in EmulateCycle()
-            CPU.PC = CPU.PC + offset - 4;
+            //CPU.PC = CPU.PC + offset - 4;
         }
 
         //Move to Coprocessor 0
         private void MTC0(Instruction i)
         {
-            UInt32 v = CPU.R[i.Index_T];
-            UInt32 c = i.Index_D;
+            UInt32 cop_r = i.Index_D;
 
-            //todo
+            try
+            {
+                COP0CodeTable[cop_r](i);
+            }
+            catch(KeyNotFoundException)
+            {
+                Logger.Message($"Unhandled COP0 Instruction 0x{i.Address:X} 0x{cop_r:X}", LogSeverity.Error);
+                Console.WriteLine();
+                throw new Exceptions.UnhandledInstructionException(i);
+            }
         }
 
         #region CPU_OPCODES
@@ -212,8 +230,14 @@ namespace firefly.core.Cpu
         //Store Word
         private void SW(Instruction i)
         {
-            UInt32 addr = CPU.R[i.Index_S] + i.Imm;
-            CPU.Store_32(addr, CPU.R[i.Index_T]);
+            if((CPU.SR & 0x10000) == 0)
+            {
+                UInt32 addr = CPU.R[i.Index_S] + i.Imm;
+                CPU.Store_32(addr, CPU.R[i.Index_T]);
+            }
+            else{
+                Logger.Message($"Cache isolated, skipping writes | SR = {CPU.SR}", LogSeverity.Information, true);
+            }
         }
 
         //Shift Left Logical
@@ -261,6 +285,12 @@ namespace firefly.core.Cpu
 
             Int32 v = checked(st + I);
             CPU.R[t] = (UInt32)v;
+        }
+
+        private void SetCOP0StatusRegister(Instruction i)
+        {
+            UInt32 v = CPU.R[i.Index_T];
+            CPU.SR = v;
         }
 
         #endregion

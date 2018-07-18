@@ -19,7 +19,8 @@ namespace firefly.core.Cpu
         public Interconnector Interconnector;
         public Interpreter Interpreter;
 
-        public UInt32 SR;
+        //COP0 : Status Register
+        public UInt32 SR = 0;
 
         public CPU()
         {
