@@ -55,6 +55,7 @@ namespace firefly.core.Cpu
                 { 0x2, JMP },
                 { 0x5, BNE },
                 { 0x8, ADDI },
+                { 0x23, LW },
 
                 { 0x0, SPECIAL },
                 { 0x10, MTC0 }
@@ -190,7 +191,7 @@ namespace firefly.core.Cpu
             offset = offset << 2;
 
             //branch to value and compensate for hardcoded PC+4 in EmulateCycle()
-            //CPU.PC = CPU.PC + offset - 4;
+            CPU.PC = CPU.PC + offset - 4;
         }
 
         //Move to Coprocessor 0
@@ -285,6 +286,20 @@ namespace firefly.core.Cpu
 
             Int32 v = checked(st + I);
             CPU.R[t] = (UInt32)v;
+        }
+
+        private void LW(Instruction i)
+        {
+            if((CPU.SR & 0x10000) == 0)
+            {
+                UInt32 addr = CPU.R[i.Index_S] + (UInt32)i.Imm_Se;
+                UInt32 v = CPU.Read_32(addr);
+                CPU.R[i.Index_T] = v;
+
+            }
+            else{
+                Logger.Message($"Cache isolated, skipping reads | SR = {CPU.SR}", LogSeverity.Information, true);
+            }
         }
 
         private void SetCOP0StatusRegister(Instruction i)
