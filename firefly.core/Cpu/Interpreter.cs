@@ -13,6 +13,7 @@ namespace firefly.core.Cpu
         private Dictionary<UInt32, Action<Instruction>> COP0CodeTable;
 
         private Boolean isRunning;
+        private Boolean ignoreInstructionInvalidExceptions = false;
 
         public Interpreter(CPU cpu)
         {
@@ -109,7 +110,11 @@ namespace firefly.core.Cpu
             {
                 Logger.Message($"Unhandled Instruction 0x{i.Address:X} 0x{i.Func:X}", LogSeverity.Error);
                 Console.WriteLine();
-                throw new Exceptions.UnhandledInstructionException(i);
+
+                if(!ignoreInstructionInvalidExceptions)
+                {
+                    throw new Exceptions.UnhandledInstructionException(i);
+                }    
             }
         }
 
@@ -180,7 +185,10 @@ namespace firefly.core.Cpu
             {
                 Logger.Message($"Unhandled SPECIAL Instruction 0x{i.Address:X} 0x{i.Func:X} 0x{i.SubFunc:X}", LogSeverity.Error);
                 Console.WriteLine();
-                throw new Exceptions.UnhandledInstructionException(i);
+                if(!ignoreInstructionInvalidExceptions)
+                {
+                    throw new Exceptions.UnhandledInstructionException(i);
+                }
             }
             
         }
@@ -207,7 +215,10 @@ namespace firefly.core.Cpu
             {
                 Logger.Message($"Unhandled COP0 Instruction 0x{i.Address:X} 0x{cop_r:X}", LogSeverity.Error);
                 Console.WriteLine();
-                throw new Exceptions.UnhandledInstructionException(i);
+                if(!ignoreInstructionInvalidExceptions)
+                {
+                    throw new Exceptions.UnhandledInstructionException(i);
+                }
             }
         }
 
