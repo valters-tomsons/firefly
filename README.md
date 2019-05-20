@@ -1,5 +1,5 @@
 # firefly
-Experimental cross-platform Playstation emulator written in C# targeting .NET Standard 2.0.
+Experimental cross-platform Playstation emulator written in C# targeting .NET Standard 2.0 and .NET Core.
 
 # Resources
 ## Playstation
