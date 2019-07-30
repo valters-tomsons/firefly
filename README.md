@@ -19,6 +19,8 @@ http://www.psxdev.net/forum/viewtopic.php?f=49&t=65
 
 http://hitmen.c02.at/files/docs/psx/psx.pdf
 
+https://www.youtube.com/watch?v=MPXpH2hxuNc
+
 ## Vulkan
 https://vulkan-tutorial.com/Introduction
 
