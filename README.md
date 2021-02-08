@@ -1,7 +1,8 @@
 # firefly
-Experimental cross-platform Playstation emulator written in C# targeting .NET Standard 2.0 and .NET Core.
+Experimental cross-platform Playstation emulator written in C# targeting .NET Core 3.1
 
 # Resources
+
 ## Playstation
 http://www.psxdev.net/forum/viewtopic.php?f=49&t=147
 
@@ -22,6 +23,7 @@ http://hitmen.c02.at/files/docs/psx/psx.pdf
 https://www.youtube.com/watch?v=MPXpH2hxuNc
 
 ## Vulkan
+
 https://vulkan-tutorial.com/Introduction
 
 http://www.duskborn.com/a-simple-vulkan-compute-example/
