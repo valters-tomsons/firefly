@@ -13,7 +13,7 @@ namespace firefly.core.Cpu
         private Dictionary<UInt32, Action<Instruction>> COP0CodeTable;
 
         private Boolean isRunning;
-        private Boolean ignoreInstructionInvalidExceptions = false;
+        private readonly Boolean ignoreInstructionInvalidExceptions = false;
 
         public Interpreter(CPU cpu)
         {
@@ -37,7 +37,6 @@ namespace firefly.core.Cpu
             {
                 Console.WriteLine("Cannot start interpreter without BIOS image.");
             }
-            
         }
 
         public void Pause()
@@ -114,7 +113,7 @@ namespace firefly.core.Cpu
                 if(!ignoreInstructionInvalidExceptions)
                 {
                     throw new Exceptions.UnhandledInstructionException(i);
-                }    
+                }
             }
         }
 
@@ -148,7 +147,6 @@ namespace firefly.core.Cpu
                             $"0x{i.SubFunc:X}"
                         );
                     }
-                    
                 }
                 else
                 {
@@ -159,7 +157,6 @@ namespace firefly.core.Cpu
                         $"0x{i.Address:X}"
                     );
                 }
-                
             }
             catch
             {
@@ -190,7 +187,6 @@ namespace firefly.core.Cpu
                     throw new Exceptions.UnhandledInstructionException(i);
                 }
             }
-            
         }
 
         private void Branch(UInt32 offset)
@@ -306,7 +302,6 @@ namespace firefly.core.Cpu
                 UInt32 addr = CPU.R[i.Index_S] + (UInt32)i.Imm_Se;
                 UInt32 v = CPU.Read_32(addr);
                 CPU.R[i.Index_T] = v;
-
             }
             else{
                 Logger.Message($"Cache isolated, skipping reads | SR = {CPU.SR}", LogSeverity.Information, true);
