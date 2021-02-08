@@ -4,7 +4,7 @@ using firefly.core.Cpu;
 
 namespace firefly
 {
-    class Program
+    static class Program
     {
         private static CPU CPU;
 
@@ -15,7 +15,7 @@ namespace firefly
             Console.ReadLine();
         }
 
-        static byte[] LoadBIOS(string file)
+        private static byte[] LoadBIOS(string file)
         {
             string _currentDir = AppDomain.CurrentDomain.BaseDirectory + "bios";
             string _currentFile = $"{_currentDir}/{file}";
@@ -33,15 +33,15 @@ namespace firefly
             }
         }
 
-        static void InitCPU()
+        private static void InitCPU()
         {
-            string biosfile = "scph5501.BIN";
+            const string biosfile = "scph5501.BIN";
 
             CPU = new CPU();
             CPU.Interconnector.BIOS_Image.CreateImage(LoadBIOS(biosfile));
         }
 
-        static void StartCPU()
+        private static void StartCPU()
         {
             CPU.Interpreter.Start();
         }

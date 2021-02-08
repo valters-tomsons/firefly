@@ -54,7 +54,6 @@ namespace firefly.core.Cpu
             }
         }
 
-
         public UInt32 Read_32(UInt32 Address)
         {
             return Interconnector.Read_32(Interconnector.BIOS_Image, Address);
