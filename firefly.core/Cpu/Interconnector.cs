@@ -10,9 +10,9 @@ namespace firefly.core.Cpu
     {
         public BIOS BIOS_Image;
 
-        public Range MEM_CONTROL = new Range(0x1f801000, 36);
-        public Range RAM_SIZE = new Range(0x1f801060, 4);
-        public Range CACHE_CONTROL = new Range(0xfffe0130, 4);
+        public Domain.Range MEM_CONTROL = new(0x1f801000, 36);
+        public Domain.Range RAM_SIZE = new(0x1f801060, 4);
+        public Domain.Range CACHE_CONTROL = new(0xfffe0130, 4);
 
         public Interconnector()
         {

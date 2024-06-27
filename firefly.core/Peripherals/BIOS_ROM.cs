@@ -8,7 +8,7 @@ namespace firefly.core.Peripherals
         public BIOS()
         {
             ExpectedSize = 512 * 1024;
-            Range = new Range((UInt32) MIPS_DEFAULT_ENUM.BIOS_KSEG1, ExpectedSize);
+            Range = new((UInt32) MIPS_DEFAULT_ENUM.BIOS_KSEG1, ExpectedSize);
         }
 
         public void CreateImage(byte[] buffer)

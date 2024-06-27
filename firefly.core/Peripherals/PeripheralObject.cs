@@ -1,11 +1,10 @@
 ﻿using System;
-using firefly.core.Domain;
 
 namespace firefly.core.Peripherals
 {
     public class PeripheralObject
     {
-        public Range Range { get; protected set; }
+        public Domain.Range Range { get; protected set; }
         public UInt32 ExpectedSize { get; protected set; }
         public byte[] Data { get; set; }
 

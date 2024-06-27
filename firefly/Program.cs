@@ -35,7 +35,7 @@ namespace firefly
 
         private static void InitCPU()
         {
-            const string biosfile = "scph5501.BIN";
+            const string biosfile = "scph5502.BIN";
 
             CPU = new CPU();
             CPU.Interconnector.BIOS_Image.CreateImage(LoadBIOS(biosfile));
