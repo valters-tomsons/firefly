@@ -2,51 +2,51 @@
 using System.Collections.Generic;
 using firefly.core.Domain;
 
-namespace firefly.core.Cpu
+namespace firefly.core.Cpu;
+
+public sealed class Interpreter
 {
-    public sealed class Interpreter
+    private readonly CPU CPU;
+
+    private Dictionary<uint, Action<Instruction>> OpCodeTable;
+    private Dictionary<uint, Action<Instruction>> SpecialCodeTable;
+    private Dictionary<uint, Action<Instruction>> COP0CodeTable;
+
+    private bool isRunning;
+    private readonly bool ignoreInstructionInvalidExceptions = false;
+
+    public Interpreter(CPU cpu)
     {
-        private readonly CPU CPU;
+        Init_OpCodeTable();
+        Init_SpecialTable();
+        Init_COP0Table();
+        CPU = cpu;
+    }
 
-        private Dictionary<UInt32, Action<Instruction>> OpCodeTable;
-        private Dictionary<UInt32, Action<Instruction>> SpecialCodeTable;
-        private Dictionary<UInt32, Action<Instruction>> COP0CodeTable;
-
-        private Boolean isRunning;
-        private readonly Boolean ignoreInstructionInvalidExceptions = false;
-
-        public Interpreter(CPU cpu)
+    public void Start()
+    {
+        if (CPU.Interconnector.BIOS.Data != null)
         {
-            Init_OpCodeTable();
-            Init_SpecialTable();
-            Init_COP0Table();
-            CPU = cpu;
-        }
-
-        public void Start()
-        {
-            if (CPU.Interconnector.BIOS_Image.Data != null)
+            isRunning = true;
+            while (isRunning)
             {
-                isRunning = true;
-                while (isRunning)
-                {
-                    EmulateCycle();
-                }
-            }
-            else
-            {
-                Console.WriteLine("Cannot start interpreter without BIOS image.");
+                EmulateCycle();
             }
         }
-
-        public void Pause()
+        else
         {
-            isRunning = false;
+            Console.WriteLine("Cannot start interpreter without BIOS image.");
         }
+    }
 
-        private void Init_OpCodeTable()
-        {
-            OpCodeTable = new Dictionary<UInt32, Action<Instruction>>
+    public void Pause()
+    {
+        isRunning = false;
+    }
+
+    private void Init_OpCodeTable()
+    {
+        OpCodeTable = new Dictionary<uint, Action<Instruction>>
             {
                 { 0xF, LUI },
                 { 0xD, ORI },
@@ -60,260 +60,261 @@ namespace firefly.core.Cpu
                 { 0x0, SPECIAL },
                 { 0x10, MTC0 }
             };
-        }
+    }
 
-        private void Init_SpecialTable()
-        {
-            SpecialCodeTable = new Dictionary<UInt32, Action<Instruction>>
+    private void Init_SpecialTable()
+    {
+        SpecialCodeTable = new Dictionary<uint, Action<Instruction>>
             {
                 { 0x0, SLL },
                 { 0x25, OR }
             };
-        }
+    }
 
-        private void Init_COP0Table()
-        {
-            COP0CodeTable = new Dictionary<UInt32, Action<Instruction>>
+    private void Init_COP0Table()
+    {
+        COP0CodeTable = new Dictionary<uint, Action<Instruction>>
             {
                 {0xC, SetCOP0StatusRegister}
             };
-        }
+    }
 
-        private void PreserveZero()
+    private void PreserveZero()
+    {
+        CPU.R[0] = 0;
+    }
+
+    public void EmulateCycle()
+    {
+        PreserveZero();
+
+        uint PC = CPU.PC;
+
+        Instruction i = CPU.NextInstruction;
+        CPU.NextInstruction = new Instruction(CPU.Read_32(PC));
+        CPU.PC += 4;
+
+        Execute(i);
+    }
+
+    public void Execute(Instruction i)
+    {
+        LogInstruction(i);
+
+        try
         {
-            CPU.R[0] = 0;
+            OpCodeTable[i.Func](i);
         }
-
-        public void EmulateCycle()
+        catch (KeyNotFoundException)
         {
-            PreserveZero();
-
-            UInt32 PC = CPU.PC;
-
-            Instruction i = CPU.NextInstruction;
-            CPU.NextInstruction = new Instruction(CPU.Read_32(PC));
-            CPU.PC += 4;
-
-            Execute(i);
-        }
-
-        public void Execute(Instruction i)
-        {
-            LogInstruction(i);
-
-            try
-            {
-                OpCodeTable[i.Func](i);
-            }
-            catch (KeyNotFoundException)
-            {
-                Logger.Message($"Unhandled Instruction 0x{i.Address:X} 0x{i.Func:X}", LogSeverity.Error);
-                Console.WriteLine();
-
-                if(!ignoreInstructionInvalidExceptions)
-                {
-                    throw new Exceptions.UnhandledInstructionException(i);
-                }
-            }
-        }
-
-        private void LogInstruction(Instruction i)
-        {
+            Logger.Message($"Unhandled Instruction 0x{i.Address:X} 0x{i.Func:X}", LogSeverity.Error);
             Console.WriteLine();
 
-            try
+            if (!ignoreInstructionInvalidExceptions)
             {
-                //Log SPECIAL subfunctions
-                if (i.Func == 0x0)
+                throw new Exceptions.UnhandledInstructionException(i);
+            }
+        }
+    }
+
+    private void LogInstruction(Instruction i)
+    {
+        Console.WriteLine();
+
+        try
+        {
+            //Log SPECIAL subfunctions
+            if (i.Func == 0x0)
+            {
+                //SLL NOP
+                if (CPU.R[i.Index_T] << (short)i.Imm_Shift == 0x0)
                 {
-                    //SLL NOP
-                    if (CPU.R[i.Index_T] << (Int16)i.Imm_Shift == 0x0)
-                    {
-                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
 
-                        Console.Write(
-                            "{0, 12}",
-                            "NOP"
-                        );
+                    Console.Write(
+                        "{0, 12}",
+                        "NOP"
+                    );
 
-                        Console.ForegroundColor = ConsoleColor.White;
-                    }
-                    else
-                    {
-                        Console.Write(
-                            "{0, 12} {1, 12} {2, 12}",
-                            SpecialCodeTable[i.SubFunc].Method.Name,
-                            $"0x{i.Address:X}",
-                            $"0x{i.SubFunc:X}"
-                        );
-                    }
+                    Console.ForegroundColor = ConsoleColor.White;
                 }
                 else
                 {
-                    //Log OPCODES
                     Console.Write(
-                        "{0, 12} {1, 12}",
-                        OpCodeTable[i.Func].Method.Name,
-                        $"0x{i.Address:X}"
+                        "{0, 12} {1, 12} {2, 12}",
+                        SpecialCodeTable[i.SubFunc].Method.Name,
+                        $"0x{i.Address:X}",
+                        $"0x{i.SubFunc:X}"
                     );
                 }
             }
-            catch
+            else
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-
+                //Log OPCODES
                 Console.Write(
-                    "{0, 12} {1, 12} {2, 12}", 
-                    "NULL", $"0x{i.Address:X}",
-                    $"0x{i.Imm_Jump:X}"
-                    );
-
-                Console.ForegroundColor = ConsoleColor.White;
+                    "{0, 12} {1, 12}",
+                    OpCodeTable[i.Func].Method.Name,
+                    $"0x{i.Address:X}"
+                );
             }
         }
-
-        private void SPECIAL(Instruction i)
+        catch
         {
-            try
-            {
-                SpecialCodeTable[i.SubFunc](i);
-            }
-            catch(KeyNotFoundException)
-            {
-                Logger.Message($"Unhandled SPECIAL Instruction 0x{i.Address:X} 0x{i.Func:X} 0x{i.SubFunc:X}", LogSeverity.Error);
-                Console.WriteLine();
-                if(!ignoreInstructionInvalidExceptions)
-                {
-                    throw new Exceptions.UnhandledInstructionException(i);
-                }
-            }
+            Console.ForegroundColor = ConsoleColor.Red;
+
+            Console.Write(
+                "{0, 12} {1, 12} {2, 12}",
+                "NULL", $"0x{i.Address:X}",
+                $"0x{i.Imm_Jump:X}"
+                );
+
+            Console.ForegroundColor = ConsoleColor.White;
         }
-
-        private void Branch(UInt32 offset)
-        {
-            //offset immediates are shifted two places since PC addresses must be 32bit at all times
-            offset = offset << 2;
-
-            //branch to value and compensate for hardcoded PC+4 in EmulateCycle()
-            CPU.PC = CPU.PC + offset - 4;
-        }
-
-        //Move to Coprocessor 0
-        private void MTC0(Instruction i)
-        {
-            UInt32 cop_r = i.Index_D;
-
-            try
-            {
-                COP0CodeTable[cop_r](i);
-            }
-            catch(KeyNotFoundException)
-            {
-                Logger.Message($"Unhandled COP0 Instruction 0x{i.Address:X} 0x{cop_r:X}", LogSeverity.Error);
-                Console.WriteLine();
-                if(!ignoreInstructionInvalidExceptions)
-                {
-                    throw new Exceptions.UnhandledInstructionException(i);
-                }
-            }
-        }
-
-        #region CPU_OPCODES
-
-        //Load Upper Immediate
-        private void LUI(Instruction i)
-        {
-            //set low 16bits to 0
-            var v = i.Imm << 16;
-            CPU.R[i.Index_T] = v;
-        }
-
-        //OR Immediate
-        private void ORI(Instruction i)
-        {
-            UInt32 v = CPU.R[i.Index_S] | i.Imm;
-            CPU.R[i.Index_T] = v;
-        }
-
-        //Store Word
-        private void SW(Instruction i)
-        {
-            if((CPU.SR & 0x10000) == 0)
-            {
-                UInt32 addr = CPU.R[i.Index_S] + i.Imm;
-                CPU.Store_32(addr, CPU.R[i.Index_T]);
-            }
-            else{
-                Logger.Message($"Cache isolated, skipping writes | SR = {CPU.SR}", LogSeverity.Information, true);
-            }
-        }
-
-        //Shift Left Logical
-        private void SLL(Instruction i)
-        {
-            UInt32 v = CPU.R[i.Index_T] << (Int16)i.Imm_Shift;
-            CPU.R[i.Index_D] = v;
-        }
-
-        //Add Immediate Unsigned
-        private void ADDIU(Instruction i)
-        {
-            UInt32 v = CPU.R[i.Index_S] + (UInt32)i.Imm_Se;
-            CPU.R[i.Index_T] = v;
-        }
-
-        //Jump (J)
-        private void JMP(Instruction i)
-        {
-            CPU.PC = (CPU.PC & 0xf0000000) | (i.Imm_Jump << 2);
-        }
-
-        private void OR(Instruction i)
-        {
-            UInt32 v = CPU.R[i.Index_S] | CPU.R[i.Index_T];
-            CPU.R[i.Index_D] = v;
-        }
-
-        //Branch If Not Equal
-        private void BNE(Instruction i)
-        {
-            if (i.Index_S != i.Index_T)
-            {
-                Branch((UInt16)i.Imm_Se);
-            }
-        }
-
-        //Add Immediate
-        private void ADDI(Instruction i)
-        {
-            var I  = (Int32)i.Imm_Se;
-            var t = i.Index_T;
-            var s = i.Index_S;
-            var st = (Int32)CPU.R[s];
-
-            Int32 v = checked(st + I);
-            CPU.R[t] = (UInt32)v;
-        }
-
-        private void LW(Instruction i)
-        {
-            if((CPU.SR & 0x10000) == 0)
-            {
-                UInt32 addr = CPU.R[i.Index_S] + (UInt32)i.Imm_Se;
-                UInt32 v = CPU.Read_32(addr);
-                CPU.R[i.Index_T] = v;
-            }
-            else{
-                Logger.Message($"Cache isolated, skipping reads | SR = {CPU.SR}", LogSeverity.Information, true);
-            }
-        }
-
-        private void SetCOP0StatusRegister(Instruction i)
-        {
-            UInt32 v = CPU.R[i.Index_T];
-            CPU.SR = v;
-        }
-
-        #endregion
     }
+
+    private void SPECIAL(Instruction i)
+    {
+        try
+        {
+            SpecialCodeTable[i.SubFunc](i);
+        }
+        catch (KeyNotFoundException)
+        {
+            Logger.Message($"Unhandled SPECIAL Instruction 0x{i.Address:X} 0x{i.Func:X} 0x{i.SubFunc:X}", LogSeverity.Error);
+            Console.WriteLine();
+            if (!ignoreInstructionInvalidExceptions)
+            {
+                throw new Exceptions.UnhandledInstructionException(i);
+            }
+        }
+    }
+
+    private void Branch(uint offset)
+    {
+        //offset immediates are shifted two places since PC addresses must be 32bit at all times
+        offset <<= 2;
+
+        //branch to value and compensate for hardcoded PC+4 in EmulateCycle()
+        CPU.PC = CPU.PC + offset - 4;
+    }
+
+    //Move to Coprocessor 0
+    private void MTC0(Instruction i)
+    {
+        uint cop_r = i.Index_D;
+
+        try
+        {
+            COP0CodeTable[cop_r](i);
+        }
+        catch (KeyNotFoundException)
+        {
+            Logger.Message($"Unhandled COP0 Instruction 0x{i.Address:X} 0x{cop_r:X}", LogSeverity.Error);
+            Console.WriteLine();
+            if (!ignoreInstructionInvalidExceptions)
+            {
+                throw new Exceptions.UnhandledInstructionException(i);
+            }
+        }
+    }
+
+    #region CPU_OPCODES
+
+    //Load Upper Immediate
+    private void LUI(Instruction i)
+    {
+        //set low 16bits to 0
+        var v = i.Imm << 16;
+        CPU.R[i.Index_T] = v;
+    }
+
+    //OR Immediate
+    private void ORI(Instruction i)
+    {
+        uint v = CPU.R[i.Index_S] | i.Imm;
+        CPU.R[i.Index_T] = v;
+    }
+
+    //Store Word
+    private void SW(Instruction i)
+    {
+        if ((CPU.SR & 0x10000) == 0)
+        {
+            uint addr = CPU.R[i.Index_S] + i.Imm;
+            CPU.Store_32(addr, CPU.R[i.Index_T]);
+        }
+        else
+        {
+            Logger.Message($"Cache isolated, skipping writes | SR = {CPU.SR}", LogSeverity.Information, true);
+        }
+    }
+
+    //Shift Left Logical
+    private void SLL(Instruction i)
+    {
+        uint v = CPU.R[i.Index_T] << (short)i.Imm_Shift;
+        CPU.R[i.Index_D] = v;
+    }
+
+    //Add Immediate Unsigned
+    private void ADDIU(Instruction i)
+    {
+        uint v = CPU.R[i.Index_S] + (uint)i.Imm_Se;
+        CPU.R[i.Index_T] = v;
+    }
+
+    //Jump (J)
+    private void JMP(Instruction i)
+    {
+        CPU.PC = (CPU.PC & 0xf0000000) | (i.Imm_Jump << 2);
+    }
+
+    private void OR(Instruction i)
+    {
+        uint v = CPU.R[i.Index_S] | CPU.R[i.Index_T];
+        CPU.R[i.Index_D] = v;
+    }
+
+    //Branch If Not Equal
+    private void BNE(Instruction i)
+    {
+        if (i.Index_S != i.Index_T)
+        {
+            Branch((ushort)i.Imm_Se);
+        }
+    }
+
+    //Add Immediate
+    private void ADDI(Instruction i)
+    {
+        var I = i.Imm_Se;
+        var t = i.Index_T;
+        var s = i.Index_S;
+        var st = (int)CPU.R[s];
+
+        int v = checked(st + I);
+        CPU.R[t] = (uint)v;
+    }
+
+    private void LW(Instruction i)
+    {
+        if ((CPU.SR & 0x10000) == 0)
+        {
+            uint addr = CPU.R[i.Index_S] + (uint)i.Imm_Se;
+            uint v = CPU.Read_32(addr);
+            CPU.R[i.Index_T] = v;
+        }
+        else
+        {
+            Logger.Message($"Cache isolated, skipping reads | SR = {CPU.SR}", LogSeverity.Information, true);
+        }
+    }
+
+    private void SetCOP0StatusRegister(Instruction i)
+    {
+        uint v = CPU.R[i.Index_T];
+        CPU.SR = v;
+    }
+
+    #endregion
 }

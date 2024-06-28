@@ -1,18 +1,12 @@
 ﻿using System;
 using firefly.core.Domain;
 
-namespace firefly.core.Exceptions
+namespace firefly.core.Exceptions;
+
+class UnhandledInstructionException(Instruction i) : Exception(Message(i))
 {
-    class UnhandledInstructionException : Exception
+    private new static string Message(Instruction i)
     {
-        public UnhandledInstructionException(Instruction i) : base(Message(i))
-        {
-
-        }
-
-        private new static string Message(Instruction i)
-        {
-            return $"Unhandled instruction 0x{i.Func:X} tried to execute.";
-        }
+        return $"Unhandled instruction 0x{i.Func:X} tried to execute.";
     }
 }

@@ -1,14 +1,11 @@
-﻿using System;
+﻿namespace firefly.core.Domain;
 
-namespace firefly.core.Domain
+/// <summary>
+/// Contains default/reset values for registers
+/// </summary>
+enum MIPS_DEFAULT_ENUM : uint
 {
-    //Contains default (reset values) for any register
-    //All should be unsigned 32-bit integers
+    PLACEHOLDER = 0xdeadbeef,
 
-    enum MIPS_DEFAULT_ENUM : UInt32
-    {
-        PLACEHOLDER = 0xdeadbeef,
-
-        BIOS_KSEG1 = 0xbfc00000
-    }
+    BIOS_KSEG1 = 0xbfc00000
 }

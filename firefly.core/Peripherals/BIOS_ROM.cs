@@ -1,20 +1,17 @@
-﻿using System;
-using firefly.core.Domain;
+﻿using firefly.core.Domain;
 
-namespace firefly.core.Peripherals
+namespace firefly.core.Peripherals;
+
+public sealed class BIOS : PeripheralObject
 {
-    public sealed class BIOS : PeripheralObject
+    public BIOS()
     {
-        public BIOS()
-        {
-            ExpectedSize = 512 * 1024;
-            Range = new((UInt32) MIPS_DEFAULT_ENUM.BIOS_KSEG1, ExpectedSize);
-        }
+        ExpectedSize = 512 * 1024;
+        Range = new((uint)MIPS_DEFAULT_ENUM.BIOS_KSEG1, ExpectedSize);
+    }
 
-        public void CreateImage(byte[] buffer)
-        {
-            Console.WriteLine("Loading BIOS file.");
-            Data = buffer;
-        } 
+    public void CreateFromImage(byte[] buffer)
+    {
+        Data = buffer;
     }
 }

@@ -10,40 +10,35 @@ namespace firefly
 
         static void Main(string[] args)
         {
-            InitCPU();
-            StartCPU();
+            Start();
             Console.ReadLine();
+        }
+
+        private static void Start()
+        {
+            var biosFile = LoadBIOS("scph5502.BIN");
+            if (biosFile is null) throw new NotImplementedException();
+
+            CPU = new CPU();
+            CPU.Interconnector.BIOS.CreateFromImage(biosFile);
+
+            CPU.Interpreter.Start();
         }
 
         private static byte[] LoadBIOS(string file)
         {
-            string _currentDir = AppDomain.CurrentDomain.BaseDirectory + "bios";
-            string _currentFile = $"{_currentDir}/{file}";
+            var _currentDir = AppDomain.CurrentDomain.BaseDirectory + "bios";
+            var _currentFile = $"{_currentDir}/{file}";
 
-            if (File.Exists(_currentFile))
-            {
-                var data = File.ReadAllBytes(_currentFile);
-                Console.WriteLine($"BIOS File loaded: {data.Length / 1024}KB");
-                return data;
-            }
-            else
+            if (!File.Exists(_currentFile))
             {
                 Console.WriteLine("BIOS file doesn't exist.");
                 return null;
             }
-        }
 
-        private static void InitCPU()
-        {
-            const string biosfile = "scph5502.BIN";
-
-            CPU = new CPU();
-            CPU.Interconnector.BIOS_Image.CreateImage(LoadBIOS(biosfile));
-        }
-
-        private static void StartCPU()
-        {
-            CPU.Interpreter.Start();
+            var data = File.ReadAllBytes(_currentFile);
+            Console.WriteLine($"BIOS File loaded: {data.Length / 1024}KB");
+            return data;
         }
     }
 }

@@ -1,18 +1,11 @@
-﻿using firefly.core.Peripherals;
-using System;
+﻿using System;
 
-namespace firefly.core.Exceptions
+namespace firefly.core.Exceptions;
+
+class UnalignedMemoryAccessException(uint Address) : Exception(Message(Address))
 {
-    class UnalignedMemoryAccessException : Exception
+    private new static string Message(uint Address)
     {
-        public UnalignedMemoryAccessException(UInt32 Address) : base (Message(Address))
-        {
-
-        }
-
-        private new static string Message(UInt32 Address)
-        {
-            return $"0x:{Address:X} is out of range.";
-        }
+        return $"0x:{Address:X} is out of range.";
     }
 }

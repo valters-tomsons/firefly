@@ -1,28 +1,19 @@
-﻿using System;
+﻿namespace firefly.core.Domain;
 
-namespace firefly.core.Domain
+public struct Range(uint Start, uint Length)
 {
-    public class Range
+    public uint Start = Start;
+    public uint Length = Length;
+
+    public readonly bool Contains(uint Address, out uint Offset)
     {
-        public UInt32 Start;
-        public UInt32 Length;
-
-        public Range(UInt32 Start, UInt32 Length)
+        if (Address >= Start && Address < Start + Length)
         {
-            this.Start = Start;
-            this.Length = Length;
+            Offset = Address - Start;
+            return true;
         }
 
-        public bool Contains(UInt32 Address, out UInt32 Offset)
-        {
-            if (Address >= Start && Address < Start + Length)
-            {
-                Offset = Address - Start;
-                return true;
-            }
-
-            Offset = UInt32.MaxValue;
-            return false;
-        }
+        Offset = uint.MaxValue;
+        return false;
     }
 }

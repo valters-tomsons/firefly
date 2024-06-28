@@ -1,18 +1,11 @@
 ﻿using System;
 
-namespace firefly.core.Exceptions
+namespace firefly.core.Exceptions;
+
+class UnhandledStore32Exception(uint Address, uint v) : Exception(Message(Address, v))
 {
-    class UnhandledStore32Exception : Exception
+    private new static string Message(uint Address, uint v)
     {
-
-        public UnhandledStore32Exception(UInt32 Address, UInt32 v) : base(Message(Address, v))
-        {
-
-        }
-
-        private new static string Message(UInt32 Address, UInt32 v)
-        {
-            return $"Unhandled Store_32 operation into address 0x:{Address:X}";
-        }
+        return $"Unhandled Store_32 operation into address 0x:{Address:X}";
     }
 }
